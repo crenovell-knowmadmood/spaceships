@@ -1,0 +1,14 @@
+server:
+  port: 8081
+spring:
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            brokers: 9092
+    bindings:
+      input:
+        destination:spaceships_topic
+      output:
+        destination: filtered_spaceships_topic

@@ -1,13 +1,13 @@
-package com.w2m.wings;
+package com.w2m.spaceships;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WingsApplication {
+public class SpaceshipsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WingsApplication.class, args);
+		SpringApplication.run(SpaceshipsApplication.class, args);
 	}
 
 }
