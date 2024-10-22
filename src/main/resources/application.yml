@@ -1,14 +1,62 @@
 server:
   port: 8081
 spring:
-  cloud:
-    stream:
-      kafka:
-        streams:
-          binder:
-            brokers: 9092
+  application:
+    name: spaceships
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+#  cloud:
+#    stream:
+#      kafka:
+#        binder:
+#          brokers:
+#            - localhost:9092
+#          schemaRegistryClient:
+#            endpoint: http://localhost:8081
+#      bindings:
+#        process-out:
+#          destination: ${spring.application.name}-out
+#          content-type: application/*+avro
+#        binder:
+#          brokers: 9092
+#          configuration:
+#            schema:
+#              registry:
+#                url: http://localhost:8081
+#
+#      streams:
+#        binder:
+#          configuration:
+#            default:
+#              key:
+#                serde:
+#                  io.confluent.kafka.streams.sedes.avro.SpecificAvroSerde
+#              value:
+#                serde:
+#                  io.confluent.kafka.streams.sedes.avro.SpecificAvroSerde
+#          application-id: ${application.name}
     bindings:
       input:
-        destination:spaceships_topic
+        destination: spaceships_topic
       output:
         destination: filtered_spaceships_topic
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+    properties:
+      schema:
+        registry:
+          url: http://localhost:8084
+    producer:
+      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      topic: ${spring.application.name}-output
