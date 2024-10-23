@@ -19,7 +19,6 @@ public class SpaceshipsControllerImpl implements SpaceshipsController {
 
   @Override
   public ResponseEntity<Page<Spaceship>> getAll(Pageable pageable) {
-    ;
     return ResponseEntity.ok(service.getAllSpaceShips(pageable));
   }
 

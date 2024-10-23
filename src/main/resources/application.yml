@@ -11,36 +11,6 @@ spring:
   h2:
     console:
       enabled: true
-#  cloud:
-#    stream:
-#      kafka:
-#        binder:
-#          brokers:
-#            - localhost:9092
-#          schemaRegistryClient:
-#            endpoint: http://localhost:8081
-#      bindings:
-#        process-out:
-#          destination: ${spring.application.name}-out
-#          content-type: application/*+avro
-#        binder:
-#          brokers: 9092
-#          configuration:
-#            schema:
-#              registry:
-#                url: http://localhost:8081
-#
-#      streams:
-#        binder:
-#          configuration:
-#            default:
-#              key:
-#                serde:
-#                  io.confluent.kafka.streams.sedes.avro.SpecificAvroSerde
-#              value:
-#                serde:
-#                  io.confluent.kafka.streams.sedes.avro.SpecificAvroSerde
-#          application-id: ${application.name}
     bindings:
       input:
         destination: spaceships_topic
@@ -60,3 +30,7 @@ spring:
       key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
       topic: ${spring.application.name}-output
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
