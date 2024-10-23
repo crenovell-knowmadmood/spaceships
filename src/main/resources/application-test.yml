@@ -3,7 +3,7 @@ server:
 spring:
   application:
     name: spaceships
-    is_kafka_enabled: true
+    is_kafka_enabled: false
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver

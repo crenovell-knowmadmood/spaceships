@@ -28,6 +28,8 @@ public class SpaceshipsServiceImpl implements SpaceshipsService {
   @Autowired
   SpaceshipRepository repository;
 
+  @Value("${spring.application.is_kafka_enabled}")
+  Boolean isKafkaEnabled;
   @Autowired
   KafkaTemplate kafkaTemplate;
   @Autowired
@@ -55,9 +57,11 @@ public class SpaceshipsServiceImpl implements SpaceshipsService {
   @Override
   public Spaceship create(final Spaceship spaceShip) {
     final Spaceship spaceship = repository.save(spaceShip);
-    SpaceshipMessageKey key = mapper.toMessageKey(spaceship);
-    final SpaceshipMessagePayload payload = mapper.toMessagePayload(spaceship, CREATE);
-    kafkaTemplate.send(outputTopic, key, payload);
+    if(isKafkaEnabled){
+      final SpaceshipMessageKey key = mapper.toMessageKey(spaceship);
+      final SpaceshipMessagePayload payload = mapper.toMessagePayload(spaceship, CREATE);
+      kafkaTemplate.send(outputTopic, key, payload);
+    }
     return spaceship;
   }
 
@@ -67,7 +71,7 @@ public class SpaceshipsServiceImpl implements SpaceshipsService {
     existingSpaceShip.setName(spaceShip.getName());
     existingSpaceShip.setType(spaceShip.getType());
     final Spaceship spaceship = repository.save(existingSpaceShip);
-    SpaceshipMessageKey key = mapper.toMessageKey(existingSpaceShip);
+    final SpaceshipMessageKey key = mapper.toMessageKey(existingSpaceShip);
     final SpaceshipMessagePayload payload = mapper.toMessagePayload(spaceship, UPDATE);
     kafkaTemplate.send(outputTopic, key, payload);
 

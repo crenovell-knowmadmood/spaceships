@@ -4,11 +4,9 @@ package com.w2m.spaceships.services;
 import com.w2m.spaceships.entities.Spaceship;
 import com.w2m.spaceships.exceptions.SpaceShipNotFoundException;
 import java.util.List;
-
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 
 public interface SpaceshipsService {
