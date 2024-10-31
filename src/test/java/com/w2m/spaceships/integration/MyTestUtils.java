@@ -1,4 +1,4 @@
-package com.w2m.spaceships.controllers;
+package com.w2m.spaceships.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

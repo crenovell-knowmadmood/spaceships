@@ -1,4 +1,4 @@
-package com.w2m.spaceships.controllers;
+package com.w2m.spaceships.integration;
 
 import static com.w2m.spaceships.constants.MappingConstants.CREATE_URL;
 import static com.w2m.spaceships.constants.MappingConstants.DELETE_URL;
@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.w2m.spaceships.entities.Spaceship;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -35,10 +34,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest
 @ActiveProfiles("test")
 //@Transactional
-//@ExtendWith({SpringExtension.class})
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SpaceshipsControllerTest extends MyTestUtils<Spaceship> {
+
+class SpaceshipsIntegrationTest extends MyTestUtils<Spaceship> {
 
   public static final int ID = 1;
   @Autowired
