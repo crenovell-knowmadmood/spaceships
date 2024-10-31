@@ -44,7 +44,7 @@ class SpaceshipsIntegrationTest extends MyTestUtils<Spaceship> {
 
   @Value("${spring.application.isKafkaEnabled}")
   boolean isKafkaEnabled;
-
+//  spring.cloud.stream.bindings.sendMessage-out-0.destination
   @Test
   @Order(1)
   void testCreate() throws Exception {

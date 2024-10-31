@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   application:
     name: spaceships
@@ -21,9 +21,11 @@ spring:
     bootstrap-servers:
       - localhost:9092
     consumer:
-      group-id: my-group
+      group-id: group-${spring.application.name}
       auto-offset-reset: earliest
     properties:
+      auto.create.topics.enable: true
+      allow.auto.create.topics: true
       schema:
         registry:
           url: http://localhost:8084
@@ -35,3 +37,11 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
+  cloud:
+    stream:
+      function:
+        definition: sendMessage
+      bindings:
+        sendMessage-out-0:
+          destination: ${spring.application.name}-out
+

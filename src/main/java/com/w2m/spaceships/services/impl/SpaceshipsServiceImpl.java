@@ -12,6 +12,8 @@ import com.w2m.spaceships.services.KafkaProducerService;
 import com.w2m.spaceships.services.SpaceshipsService;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -21,7 +23,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SpaceshipsServiceImpl implements SpaceshipsService {
 
-  @Value("${spring.kafka.producer.topic}")
+//  @Value("${spring.kafka.producer.topic}")
+  @Value("${spring.cloud.stream.bindings.sendMessage-out-0.destination}")
   String outputTopic;
   @Autowired
   SpaceshipRepository repository;
@@ -30,9 +33,7 @@ public class SpaceshipsServiceImpl implements SpaceshipsService {
   boolean isKafkaEnabled;
   @Autowired
   KafkaProducerService kafkaProducerService;
-  @Autowired
-  SpaceshipMessageMapper mapper;
-
+  private static final Logger logger = LogManager.getLogger(SpaceshipsServiceImpl.class);
 
   @Override
   public Page<Spaceship> getAllSpaceShips(Pageable pageable) {
@@ -57,6 +58,7 @@ public class SpaceshipsServiceImpl implements SpaceshipsService {
     final Spaceship spaceship = repository.save(spaceShip);
 
     if (isKafkaEnabled) {
+      logger.debug("Se va a dejar mensaje en el topic: %s", outputTopic);
       kafkaProducerService.sendMessage(spaceship, CREATE);
     }
     return spaceship;

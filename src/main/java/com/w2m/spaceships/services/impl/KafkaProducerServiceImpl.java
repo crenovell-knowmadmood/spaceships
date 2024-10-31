@@ -22,7 +22,6 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
     return () -> {
       final SpaceshipMessageKey key = mapper.toMessageKey(spaceship);
       final SpaceshipMessagePayload payload = mapper.toMessagePayload(spaceship, action);
-
       return MessageBuilder.withPayload(payload).setHeader("key", key).build();
     };
   }
