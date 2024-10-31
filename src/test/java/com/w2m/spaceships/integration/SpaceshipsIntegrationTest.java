@@ -33,10 +33,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @ActiveProfiles("test")
-//@Transactional
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class SpaceshipsIntegrationTest extends MyTestUtils<Spaceship> {
 
   public static final int ID = 1;
