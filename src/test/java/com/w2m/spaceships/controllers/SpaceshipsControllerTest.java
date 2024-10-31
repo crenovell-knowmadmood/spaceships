@@ -5,45 +5,53 @@ import static com.w2m.spaceships.constants.MappingConstants.DELETE_URL;
 import static com.w2m.spaceships.constants.MappingConstants.GET_ALL_URL;
 import static com.w2m.spaceships.constants.MappingConstants.GET_BY_ID_URL;
 import static java.util.Objects.nonNull;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.w2m.spaceships.entities.Spaceship;
-import org.jetbrains.annotations.NotNull;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
-@ExtendWith({SpringExtension.class})
+//@Transactional
+//@ExtendWith({SpringExtension.class})
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SpaceshipsControllerTest extends MyTestUtils<Spaceship> {
 
+  public static final int ID = 1;
   @Autowired
   private MockMvc mockMvc;
 
 
+  @Value("${spring.application.isKafkaEnabled}")
+  boolean isKafkaEnabled;
+
   @Test
   @Order(1)
-  void create() throws Exception {
-    final int id = 2;
-    Spaceship expected = createSpaceship(id, "type", "Name");
+  void testCreate() throws Exception {
+    final Spaceship expected = createSpaceship(ID, "type", "Name");
     final String content = this.writeToJsonString(expected);
     final MockHttpServletRequestBuilder requestBuilder = post(CREATE_URL)
         .accept(MediaType.APPLICATION_JSON)
@@ -65,45 +73,34 @@ class SpaceshipsControllerTest extends MyTestUtils<Spaceship> {
 
   @Test
   @Order(2)
-  void getAll() throws Exception {
+  void testGetAll() throws Exception {
 
     mockMvc.perform(get(GET_ALL_URL))
         .andExpect(status().isOk())
         .andExpect(result -> nonNull(result.getResponse()))
+        .andExpect(jsonPath("$.totalElements", greaterThan(0)))
     ;
   }
 
   @Test
   @Order(3)
-  void getById() throws Exception {
-    final int id = 2;
-    MvcResult actual = mockMvc.perform(get(GET_BY_ID_URL, id))
+  void testGetById() throws Exception {
+
+    final MvcResult mvcResult = mockMvc.perform(get(GET_BY_ID_URL, ID))
         .andExpect(status().isOk())
-        .andExpect(result -> nonNull(result.getResponse())).andReturn();
-    assertNotNull(actual);
-    assertNotNull(actual.getResponse());
-    String result = actual.getResponse().getContentAsString();
-    assertNotNull(result);
-    Spaceship c = this.jsonStringToObject(result, Spaceship.class);
+        .andExpect(result -> nonNull(result.getResponse()))
+        .andReturn();
+    assertNotNull(mvcResult);
+
   }
 
   @Test
   @Order(4)
-  void delete() throws Exception {
-    final int id = 2;
-    mockMvc.perform(get(DELETE_URL, id))
+  void testDelete() throws Exception {
+    final int id = ID;
+    mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_URL, id))
         .andExpect(status().is2xxSuccessful())
     ;
-  }
-
-
-  @NotNull
-  private static Spaceship createSpaceship(final Integer id, final String type, final String name) {
-    Spaceship spaceship = new Spaceship();
-    spaceship.setId(id);
-    spaceship.setType(type);
-    spaceship.setName(name);
-    return spaceship;
   }
 
 

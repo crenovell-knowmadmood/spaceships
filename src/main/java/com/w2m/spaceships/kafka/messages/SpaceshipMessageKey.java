@@ -6,8 +6,6 @@ package com.w2m.spaceships.kafka.messages;
 //@Builder
 public class SpaceshipMessageKey {
   private Integer id;
-
-
   public Integer getId() {
     return id;
   }

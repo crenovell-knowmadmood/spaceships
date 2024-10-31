@@ -1,11 +1,11 @@
 version: '2'
 services:
-#  app:
-#    build: .
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - kafka
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
   zookeeper:
     image: wurstmeister/zookeeper
     ports:

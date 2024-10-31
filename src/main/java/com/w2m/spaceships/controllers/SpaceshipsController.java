@@ -1,10 +1,8 @@
 package com.w2m.spaceships.controllers;
 
+import static com.w2m.spaceships.constants.MappingConstants.CREATE_URL;
 import static com.w2m.spaceships.constants.MappingConstants.GET_ALL_URL;
 import static com.w2m.spaceships.constants.MappingConstants.GET_BY_ID_URL;
-import static com.w2m.spaceships.constants.MappingConstants.CREATE_URL;
-import static com.w2m.spaceships.constants.MappingConstants.UPDATE_URL;
-import static com.w2m.spaceships.constants.MappingConstants.DELETE_URL;
 
 import com.w2m.spaceships.constants.MappingConstants;
 import com.w2m.spaceships.entities.Spaceship;
@@ -26,13 +24,17 @@ public interface SpaceshipsController {
 
   @GetMapping(GET_ALL_URL)
   ResponseEntity<Page<Spaceship>> getAll(Pageable pageable);
+
   @GetMapping(GET_BY_ID_URL)
   ResponseEntity<Spaceship> getById(@PathVariable Integer id) throws SpaceShipNotFoundException;
-  @PostMapping(MappingConstants.CREATE_URL)
+
+  @PostMapping(CREATE_URL)
   ResponseEntity<Spaceship> create(@RequestBody Spaceship spaceship);
+
   @PutMapping(MappingConstants.UPDATE_URL)
   ResponseEntity<Spaceship> updateById(@PathVariable Integer id, @RequestBody Spaceship spaceship)
       throws SpaceShipNotFoundException;
+
   @DeleteMapping(MappingConstants.DELETE_URL)
   void delete(@PathVariable Integer id) throws SpaceShipNotFoundException;
 }

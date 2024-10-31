@@ -3,7 +3,7 @@ server:
 spring:
   application:
     name: spaceships
-    is_kafka_enabled: false
+    isKafkaEnabled: true
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -24,6 +24,8 @@ spring:
       group-id: my-group
       auto-offset-reset: earliest
     properties:
+      auto.create.topics.enable: true
+      allow.auto.create.topics: true
       schema:
         registry:
           url: http://localhost:8084
