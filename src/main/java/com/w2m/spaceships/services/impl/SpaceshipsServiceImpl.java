@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SpaceshipsServiceImpl implements SpaceshipsService {
 
-//  @Value("${spring.kafka.producer.topic}")
   @Value("${spring.cloud.stream.bindings.sendMessage-out-0.destination}")
   String outputTopic;
   @Autowired
@@ -66,7 +65,7 @@ public class SpaceshipsServiceImpl implements SpaceshipsService {
 
   @Override
   public Spaceship update(Integer id, Spaceship spaceShip) throws SpaceShipNotFoundException {
-    Spaceship existingSpaceShip = getSpaceShipById(id);
+    final Spaceship existingSpaceShip = getSpaceShipById(id);
     if (!spaceShip.getName().equals(existingSpaceShip.getName())) {
       existingSpaceShip.setName(spaceShip.getName());
     }
@@ -83,7 +82,7 @@ public class SpaceshipsServiceImpl implements SpaceshipsService {
 
   @Override
   public void delete(Integer id) throws SpaceShipNotFoundException {
-    Spaceship spaceship = getSpaceShipById(id);
+    final Spaceship spaceship = getSpaceShipById(id);
     repository.delete(spaceship);
     if (isKafkaEnabled) {
       kafkaProducerService.sendMessage(spaceship, DELETE);
