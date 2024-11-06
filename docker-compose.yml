@@ -5,22 +5,25 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - kafka
       - db
+      - schema_registry
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
     environment:
       ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_LOG_LEVEL: WARNING
   schema_registry:
     image: confluentinc/cp-schema-registry
     ports:
       - "8084:8084"
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9093
+#      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9093
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8084
+      SCHEMA_REGISTRY_LOG_LEVEL: WARNING
     depends_on:
       - kafka
     entrypoint: ["sh", "-c", "sleep 20 && /etc/confluent/docker/run"]
@@ -33,11 +36,12 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: OUTSIDE://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://kafka:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: OUTSIDE
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_LEVEL: WARNING
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   db:
@@ -46,3 +50,4 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: example
+      MYSQL_LOG_LEVEL: WARNING

@@ -1,0 +1,49 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: spaceships
+    isKafkaEnabled: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/${spring.application.name}
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+    bindings:
+      input:
+        destination: spaceships_topic
+      output:
+        destination: filtered_spaceships_topic
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    consumer:
+      group-id: group-${spring.application.name}
+      auto-offset-reset: earliest
+    properties:
+      auto.create.topics.enable: true
+      allow.auto.create.topics: true
+      schema:
+        registry:
+          url: http://localhost:8084
+    producer:
+      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      topic: ${spring.application.name}-output
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+      show-sql: true
+      dialect: org.hibernate.dialect.MySQLDialect
+  cloud:
+    stream:
+      function:
+        definition: sendMessage
+      bindings:
+        sendMessage-out-0:
+          destination: ${spring.application.name}-out
+
