@@ -1,5 +1,6 @@
 package com.w2m.spaceships.utils;
 
+import io.confluent.kafka.schemaregistry.ParsedSchema;
 import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
@@ -14,15 +15,15 @@ public class SchemaRegistryUtils {
   }
 
   public int getSchemaVersion(String subject, Schema schema) throws IOException, RestClientException {
-    // Registrar el esquema en el Schema Registry y obtener la versión asignada
-    return schemaRegistryClient.register(subject, schema);
+    final ParsedSchema parsedSchema = new AvroSchema(schema);
+    return schemaRegistryClient.register(subject, parsedSchema);
   }
 
   public int getLatestSchemaVersion(String subject) throws IOException, RestClientException {
     return schemaRegistryClient.getLatestSchemaMetadata(subject).getVersion();
   }
-  public void registerSchema(String subject, Schema avroSchema) throws Exception {
+  public int registerSchema(String subject, Schema avroSchema) throws Exception {
     AvroSchema schema = new AvroSchema(avroSchema);
-    schemaRegistryClient.register(subject, schema);
+    return schemaRegistryClient.register(subject, schema);
   }
 }
